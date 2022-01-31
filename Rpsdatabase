@@ -1,0 +1,661 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.4
+-- Dumped by pg_dump version 12.4
+
+-- Started on 2021-04-27 13:29:37
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE postgres;
+--
+-- TOC entry 2910 (class 1262 OID 13318)
+-- Name: postgres; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_India.1252' LC_CTYPE = 'English_India.1252';
+
+
+ALTER DATABASE postgres OWNER TO postgres;
+
+\connect postgres
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2911 (class 0 OID 0)
+-- Dependencies: 2910
+-- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- TOC entry 7 (class 2615 OID 16393)
+-- Name: hcomp; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA hcomp;
+
+
+ALTER SCHEMA hcomp OWNER TO postgres;
+
+--
+-- TOC entry 2912 (class 0 OID 0)
+-- Dependencies: 7
+-- Name: SCHEMA hcomp; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA hcomp IS 'h';
+
+
+--
+-- TOC entry 1 (class 3079 OID 16384)
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2913 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 205 (class 1259 OID 24633)
+-- Name: dept; Type: TABLE; Schema: hcomp; Owner: postgres
+--
+
+CREATE TABLE hcomp.dept (
+    dnum numeric NOT NULL,
+    mgrssn numeric,
+    mgdate date,
+    dname character(20)
+);
+
+
+ALTER TABLE hcomp.dept OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 24620)
+-- Name: emp; Type: TABLE; Schema: hcomp; Owner: postgres
+--
+
+CREATE TABLE hcomp.emp (
+    fname character(30),
+    mname character(10),
+    lname character(30),
+    ssn numeric NOT NULL,
+    bdate date,
+    address character(30),
+    sex character(6),
+    salary numeric,
+    superssn numeric,
+    dno numeric
+);
+
+
+ALTER TABLE hcomp.emp OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1259 OID 24661)
+-- Name: project; Type: TABLE; Schema: hcomp; Owner: postgres
+--
+
+CREATE TABLE hcomp.project (
+    pnum numeric NOT NULL,
+    pname character(50),
+    plocation character(100),
+    dnum numeric
+);
+
+
+ALTER TABLE hcomp.project OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1259 OID 24676)
+-- Name: works_on; Type: TABLE; Schema: hcomp; Owner: postgres
+--
+
+CREATE TABLE hcomp.works_on (
+    pno numeric NOT NULL,
+    essn numeric NOT NULL,
+    hours numeric(4,0)
+);
+
+
+ALTER TABLE hcomp.works_on OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1259 OID 32849)
+-- Name: academic_session; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.academic_session (
+    as_id numeric(1,0) NOT NULL,
+    enroll_year numeric(4,0)
+);
+
+
+ALTER TABLE public.academic_session OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 32794)
+-- Name: department; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.department (
+    dept_id character varying(5) NOT NULL,
+    dept_name character varying(25)
+);
+
+
+ALTER TABLE public.department OWNER TO postgres;
+
+--
+-- TOC entry 211 (class 1259 OID 40973)
+-- Name: marks; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.marks (
+    sub_code character varying(8) NOT NULL,
+    as_id numeric(1,0) NOT NULL,
+    e_no character varying(20) NOT NULL,
+    sem numeric(2,0),
+    practical_marks numeric(3,0),
+    theory_marks numeric(3,0),
+    mid_term_marks numeric(3,0),
+    grand_total numeric(3,0),
+    credit numeric(2,0)
+);
+
+
+ALTER TABLE public.marks OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1259 OID 49315)
+-- Name: result; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.result (
+    e_no character varying(20) NOT NULL,
+    sem1 numeric(3,2) DEFAULT 0.0,
+    sem2 numeric(3,2) DEFAULT 0.0,
+    sem3 numeric(3,2) DEFAULT 0.0,
+    sem4 numeric(3,2) DEFAULT 0.0,
+    sem5 numeric(3,2) DEFAULT 0.0,
+    sem6 numeric(3,2) DEFAULT 0.0,
+    sem7 numeric(3,2) DEFAULT 0.0,
+    sem8 numeric(3,2) DEFAULT 0.0,
+    ogpa numeric(3,2) DEFAULT 0.0
+);
+
+
+ALTER TABLE public.result OWNER TO postgres;
+
+--
+-- TOC entry 213 (class 1259 OID 49334)
+-- Name: student; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.student (
+    e_no character varying(20) NOT NULL,
+    sname character varying(30),
+    fname character varying(30),
+    mname character varying(30),
+    dob date,
+    email character varying(30),
+    contact numeric(10,0),
+    dept_id character varying(1)
+);
+
+
+ALTER TABLE public.student OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 32854)
+-- Name: subject; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.subject (
+    as_id numeric(1,0) NOT NULL,
+    dept_id character varying(10),
+    sub_name character varying(20),
+    sub_code character varying(8) NOT NULL,
+    credit_t numeric(2,0),
+    credit_p numeric(2,0),
+    sem numeric(1,0)
+);
+
+
+ALTER TABLE public.subject OWNER TO postgres;
+
+--
+-- TOC entry 2896 (class 0 OID 24633)
+-- Dependencies: 205
+-- Data for Name: dept; Type: TABLE DATA; Schema: hcomp; Owner: postgres
+--
+
+INSERT INTO hcomp.dept (dnum, mgrssn, mgdate, dname) VALUES (4, 987654321, '1995-01-01', 'Administration      ');
+INSERT INTO hcomp.dept (dnum, mgrssn, mgdate, dname) VALUES (1, 888665555, '1981-06-19', 'Headquarters        ');
+INSERT INTO hcomp.dept (dnum, mgrssn, mgdate, dname) VALUES (5, 333445555, '1988-05-22', 'Research            ');
+
+
+--
+-- TOC entry 2895 (class 0 OID 24620)
+-- Dependencies: 204
+-- Data for Name: emp; Type: TABLE DATA; Schema: hcomp; Owner: postgres
+--
+
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('John                          ', 'B         ', 'Smith                         ', 123456789, '1965-01-09', '731 Fondren, Houston, TX      ', ' M    ', 30000, 333445555, 5);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('Franklin                      ', ' T        ', ' Wong                         ', 333445555, '1955-12-08', '638 Voss, Houston, TX         ', 'M     ', 40000, 888665555, 5);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('Joyce                         ', 'A         ', 'English                       ', 453453453, '1972-07-31', '5631 Rice, Houston, TX        ', 'F     ', 25000, 333445555, 5);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('Ramesh                        ', 'K         ', 'Narayan                       ', 666884444, '1962-09-15', '975 Fire Oak, Humble, TX      ', 'M     ', 38000, 333445555, 5);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('James                         ', 'E         ', 'Borg                          ', 888665555, '1937-11-10', '450 Stone, Houston, TX        ', 'M     ', 55000, NULL, 1);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('Jennifer                      ', 'S         ', 'Wallace                       ', 987654321, '1941-06-20', '291 Berry, Bellaire,TX        ', 'F     ', 43000, 888665555, 4);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('Ahmad                         ', 'V         ', 'Jabbar                        ', 987987987, '1969-03-29', '980 Dallas, Houston, TX       ', 'M     ', 25000, 987654321, 4);
+INSERT INTO hcomp.emp (fname, mname, lname, ssn, bdate, address, sex, salary, superssn, dno) VALUES ('Alicia                        ', 'J         ', 'Zelaya                        ', 999887777, '1968-01-19', '3321 Castle, Spring, TX       ', 'F     ', 25000, 987654321, 4);
+
+
+--
+-- TOC entry 2897 (class 0 OID 24661)
+-- Dependencies: 206
+-- Data for Name: project; Type: TABLE DATA; Schema: hcomp; Owner: postgres
+--
+
+INSERT INTO hcomp.project (pnum, pname, plocation, dnum) VALUES (1, 'ProductX                                          ', 'Bellaire                                                                                            ', 5);
+INSERT INTO hcomp.project (pnum, pname, plocation, dnum) VALUES (2, 'ProductY                                          ', 'Sugarland                                                                                           ', 5);
+INSERT INTO hcomp.project (pnum, pname, plocation, dnum) VALUES (3, 'ProductZ                                          ', 'Houston                                                                                             ', 5);
+INSERT INTO hcomp.project (pnum, pname, plocation, dnum) VALUES (20, 'Reoraanization                                    ', 'Houston                                                                                             ', 1);
+INSERT INTO hcomp.project (pnum, pname, plocation, dnum) VALUES (30, 'Newbenefits                                       ', 'Stafford                                                                                            ', 4);
+INSERT INTO hcomp.project (pnum, pname, plocation, dnum) VALUES (10, 'Computerization                                   ', 'Bellaire                                                                                            ', 5);
+
+
+--
+-- TOC entry 2898 (class 0 OID 24676)
+-- Dependencies: 207
+-- Data for Name: works_on; Type: TABLE DATA; Schema: hcomp; Owner: postgres
+--
+
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (30, 999887777, 30);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (20, 888665555, NULL);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (1, 123456789, 33);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (1, 453453453, 20);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (2, 123456789, 8);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (2, 333445555, 10);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (2, 453453453, 20);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (3, 333445555, 10);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (3, 666884444, 40);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (10, 333445555, 10);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (10, 987987987, 35);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (10, 999887777, 10);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (20, 333445555, 10);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (20, 987654321, 15);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (30, 987654321, 20);
+INSERT INTO hcomp.works_on (pno, essn, hours) VALUES (30, 987987987, 5);
+
+
+--
+-- TOC entry 2900 (class 0 OID 32849)
+-- Dependencies: 209
+-- Data for Name: academic_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.academic_session (as_id, enroll_year) VALUES (1, 2018);
+INSERT INTO public.academic_session (as_id, enroll_year) VALUES (2, 2019);
+INSERT INTO public.academic_session (as_id, enroll_year) VALUES (3, 2020);
+
+
+--
+-- TOC entry 2899 (class 0 OID 32794)
+-- Dependencies: 208
+-- Data for Name: department; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.department (dept_id, dept_name) VALUES ('1', 'Computer Science');
+INSERT INTO public.department (dept_id, dept_name) VALUES ('2', 'Electrical
+');
+INSERT INTO public.department (dept_id, dept_name) VALUES ('3', 'electronics');
+
+
+--
+-- TOC entry 2902 (class 0 OID 40973)
+-- Dependencies: 211
+-- Data for Name: marks; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS-222', 1, '2018/CTAE/143', 4, 0, 69, 19, 88, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-221', 1, '2018/CTAE/143', 4, 0, 67, 18, 85, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-222', 1, '2018/CTAE/143', 4, 24, 39, 16, 79, 4);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-224', 1, '2018/CTAE/143', 4, 24, 41, 17, 82, 4);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-225', 1, '2018/CTAE/143', 4, 22, 37, 14, 73, 4);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('EC-228', 1, '2018/CTAE/143', 4, 0, 71, 20, 91, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS - 211', 1, '2018/CTAE/143', 3, 0, 66, 13, 79, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-211', 1, '2018/CTAE/143', 3, 20, 39, 19, 78, 4);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-212', 1, '2018/CTAE/143', 3, 77, 0, 20, 97, 2);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-213', 1, '2018/CTAE/143', 3, 28, 34, 16, 78, 5);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-214', 1, '2018/CTAE/143', 3, 0, 50, 18, 68, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('EC-219', 1, '2018/CTAE/143', 3, 21, 27, 15, 63, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('EE-212', 1, '2018/CTAE/143', 3, 29, 35, 18, 82, 4);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS100P', 1, '2018/CTAE/143', 2, 25, 33, 17, 75, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CE100', 1, '2018/CTAE/143', 2, 25, 39, 10, 74, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('EE100', 1, '2018/CTAE/143', 2, 29, 38, 19, 86, 4);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('REE100', 1, '2018/CTAE/143', 2, 0, 44, 17, 61, 2);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS121', 1, '2018/CTAE/143', 2, 0, 42, 11, 53, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CE122', 1, '2018/CTAE/143', 2, 25, 42, 10, 77, 2);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('ME124', 1, '2018/CTAE/143', 2, 21, 30, 15, 66, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('ME123', 1, '2018/CTAE/143', 2, 55, 0, 17, 72, 1);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS-100C', 1, '2018/CTAE/143', 1, 25, 29, 17, 71, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS-100E', 1, '2018/CTAE/143', 1, 26, 41, 13, 80, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('BS-111', 1, '2018/CTAE/143', 1, 0, 40, 19, 59, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CE-115', 1, '2018/CTAE/143', 1, 55, 0, 16, 71, 1);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('CS-100', 1, '2018/CTAE/143', 1, 29, 39, 18, 86, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('EC-100', 1, '2018/CTAE/143', 1, 26, 36, 15, 77, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('ME-113', 1, '2018/CTAE/143', 1, 0, 44, 15, 59, 3);
+INSERT INTO public.marks (sub_code, as_id, e_no, sem, practical_marks, theory_marks, mid_term_marks, grand_total, credit) VALUES ('ME-114', 1, '2018/CTAE/143', 1, 63, 0, 16, 79, 1);
+
+
+--
+-- TOC entry 2903 (class 0 OID 49315)
+-- Dependencies: 212
+-- Data for Name: result; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.result (e_no, sem1, sem2, sem3, sem4, sem5, sem6, sem7, sem8, ogpa) VALUES ('2018/CTAE/125', 0.50, 0.30, 0.47, 0.30, 0.66, 0.82, 0.00, 0.00, 0.00);
+INSERT INTO public.result (e_no, sem1, sem2, sem3, sem4, sem5, sem6, sem7, sem8, ogpa) VALUES ('2018/CTAE/143', 7.23, 7.12, 7.73, 8.23, 0.00, 0.00, 0.00, 0.00, 0.00);
+
+
+--
+-- TOC entry 2904 (class 0 OID 49334)
+-- Dependencies: 213
+-- Data for Name: student; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.student (e_no, sname, fname, mname, dob, email, contact, dept_id) VALUES ('2018/CTAE/121', 'DIVYANSHI JAIN', 'SUNIL JAIN', 'MAMTA JAIN', '2000-06-12', 'dj@gmail.com', 8290667314, '1');
+INSERT INTO public.student (e_no, sname, fname, mname, dob, email, contact, dept_id) VALUES ('2018/CTAE/125', 'HIMANK MAHESHWARI', 'RAKESH SONI', 'RANJANA SONI', '2000-07-31', 'himank@gmail.com', 9461183115, '1');
+INSERT INTO public.student (e_no, sname, fname, mname, dob, email, contact, dept_id) VALUES ('2018/CTAE/156', 'UJALA KHANDELWAL', 'SUNIL KHANDELWAL', 'SEEMA KHANDELWAL', '2000-07-10', 'krosh@gmail.com', 9461646628, '1');
+INSERT INTO public.student (e_no, sname, fname, mname, dob, email, contact, dept_id) VALUES ('2018/CTAE/143', 'PARIKSHIT SINGH', 'HIMMAT SINGH', 'ALKA RATHORE', '1998-11-14', 'pari@gmail.com', 9460212159, '1');
+INSERT INTO public.student (e_no, sname, fname, mname, dob, email, contact, dept_id) VALUES ('2019/CTAE/190', 'HI', 'llala', 'lskadjf', NULL, NULL, NULL, '1');
+
+
+--
+-- TOC entry 2901 (class 0 OID 32854)
+-- Dependencies: 210
+-- Data for Name: subject; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'DAA', 'CS323', 3, 0, 6);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Physics', 'BS100P', 2, 1, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Mechanics', 'CE100', 2, 1, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Electrical', 'EE100', 3, 1, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'EVS', 'REE100', 2, 0, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Compiler', 'CS321', 3, 1, 6);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Micro', 'CS322', 3, 1, 6);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'CN', 'CS324', 3, 1, 6);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'OS', 'CS325', 3, 1, 6);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Software', 'CS326', 3, 1, 6);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', ' Chemistry', 'BS-100C', 2, 1, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'English ', 'BS-100E', 2, 1, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Mathematics-I', 'BS-111', 3, 0, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'ED', 'CE-115', 0, 1, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'C', 'CS-100', 2, 1, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Electronics ', 'EC-100', 2, 1, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Mechanical', 'ME-113', 3, 0, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Workshop', 'ME-114', 0, 1, 1);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Mathematics-III', 'BS - 211', 3, 0, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'DigitalLogicDesign', 'CS-211', 3, 1, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Unix ', 'CS-212', 0, 2, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', ' C++', 'CS-213', 3, 2, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'PPL', 'CS-214', 3, 0, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'AnalogElectronics', 'EC-219', 2, 1, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Electrical', 'EE-212', 3, 1, 3);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Discretemaths', 'BS-222', 3, 0, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'COA', 'CS-221', 3, 0, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Data Structure', 'CS-222', 3, 1, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Microprocessors', 'CS-224', 3, 1, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'System Software', 'CS-225', 3, 1, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Communication', 'EC-228', 3, 0, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Theory computation', 'CS-311', 3, 0, 5);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Java Programming', 'CS-312', 3, 2, 5);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Data communication', 'CS-313', 3, 1, 5);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'ComputerArchitecture', 'CS-314', 3, 0, 5);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'DatabaseSystems', 'CS-315', 3, 1, 5);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Pulse, Digital', 'EC-319', 3, 0, 5);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Maths', 'BS121', 3, 0, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'ED', 'CE122', 1, 1, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Workshop', 'ME124', 2, 1, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (1, '1', 'Mechanical', 'ME123', 0, 1, 2);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'Mathematics', 'BS242', 3, 0, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'EC', 'EC243', 3, 0, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'PULSE WAVE', 'EC244', 3, 0, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'DSA', 'CS245', 3, 2, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'COA', 'CS246', 3, 1, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'UNIX', 'CS247', 1, 2, 4);
+INSERT INTO public.subject (as_id, dept_id, sub_name, sub_code, credit_t, credit_p, sem) VALUES (2, '1', 'JAVA', 'CS248', 3, 3, 4);
+
+
+--
+-- TOC entry 2739 (class 2606 OID 32779)
+-- Name: dept dept_dname_key; Type: CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.dept
+    ADD CONSTRAINT dept_dname_key UNIQUE (dname);
+
+
+--
+-- TOC entry 2741 (class 2606 OID 24640)
+-- Name: dept dept_pkey; Type: CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.dept
+    ADD CONSTRAINT dept_pkey PRIMARY KEY (dnum);
+
+
+--
+-- TOC entry 2737 (class 2606 OID 24627)
+-- Name: emp emp_pkey; Type: CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.emp
+    ADD CONSTRAINT emp_pkey PRIMARY KEY (ssn);
+
+
+--
+-- TOC entry 2743 (class 2606 OID 24668)
+-- Name: project project_pkey; Type: CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.project
+    ADD CONSTRAINT project_pkey PRIMARY KEY (pnum);
+
+
+--
+-- TOC entry 2745 (class 2606 OID 24670)
+-- Name: project project_pname_key; Type: CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.project
+    ADD CONSTRAINT project_pname_key UNIQUE (pname);
+
+
+--
+-- TOC entry 2747 (class 2606 OID 24683)
+-- Name: works_on works_on_pkey; Type: CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.works_on
+    ADD CONSTRAINT works_on_pkey PRIMARY KEY (pno, essn);
+
+
+--
+-- TOC entry 2751 (class 2606 OID 32853)
+-- Name: academic_session academic_session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.academic_session
+    ADD CONSTRAINT academic_session_pkey PRIMARY KEY (as_id);
+
+
+--
+-- TOC entry 2749 (class 2606 OID 32798)
+-- Name: department department_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.department
+    ADD CONSTRAINT department_pkey PRIMARY KEY (dept_id);
+
+
+--
+-- TOC entry 2755 (class 2606 OID 40977)
+-- Name: marks marks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.marks
+    ADD CONSTRAINT marks_pkey PRIMARY KEY (sub_code, as_id, e_no);
+
+
+--
+-- TOC entry 2757 (class 2606 OID 49328)
+-- Name: result result_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.result
+    ADD CONSTRAINT result_pkey PRIMARY KEY (e_no);
+
+
+--
+-- TOC entry 2759 (class 2606 OID 49338)
+-- Name: student student_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.student
+    ADD CONSTRAINT student_pkey PRIMARY KEY (e_no);
+
+
+--
+-- TOC entry 2753 (class 2606 OID 32858)
+-- Name: subject subject_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.subject
+    ADD CONSTRAINT subject_pkey PRIMARY KEY (as_id, sub_code);
+
+
+--
+-- TOC entry 2762 (class 2606 OID 24643)
+-- Name: dept dept_mgrssn_fkey; Type: FK CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.dept
+    ADD CONSTRAINT dept_mgrssn_fkey FOREIGN KEY (mgrssn) REFERENCES hcomp.emp(ssn);
+
+
+--
+-- TOC entry 2761 (class 2606 OID 24705)
+-- Name: emp emp_dno_fkey; Type: FK CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.emp
+    ADD CONSTRAINT emp_dno_fkey FOREIGN KEY (dno) REFERENCES hcomp.dept(dnum) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 2760 (class 2606 OID 24628)
+-- Name: emp emp_superssn_fkey; Type: FK CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.emp
+    ADD CONSTRAINT emp_superssn_fkey FOREIGN KEY (superssn) REFERENCES hcomp.emp(ssn);
+
+
+--
+-- TOC entry 2763 (class 2606 OID 24671)
+-- Name: project project_dnum_fkey; Type: FK CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.project
+    ADD CONSTRAINT project_dnum_fkey FOREIGN KEY (dnum) REFERENCES hcomp.dept(dnum);
+
+
+--
+-- TOC entry 2765 (class 2606 OID 24689)
+-- Name: works_on works_on_essn_fkey; Type: FK CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.works_on
+    ADD CONSTRAINT works_on_essn_fkey FOREIGN KEY (essn) REFERENCES hcomp.emp(ssn);
+
+
+--
+-- TOC entry 2764 (class 2606 OID 24684)
+-- Name: works_on works_on_pno_fkey; Type: FK CONSTRAINT; Schema: hcomp; Owner: postgres
+--
+
+ALTER TABLE ONLY hcomp.works_on
+    ADD CONSTRAINT works_on_pno_fkey FOREIGN KEY (pno) REFERENCES hcomp.project(pnum);
+
+
+--
+-- TOC entry 2768 (class 2606 OID 40978)
+-- Name: marks marks_as_id_sub_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.marks
+    ADD CONSTRAINT marks_as_id_sub_code_fkey FOREIGN KEY (as_id, sub_code) REFERENCES public.subject(as_id, sub_code);
+
+
+--
+-- TOC entry 2766 (class 2606 OID 32859)
+-- Name: subject subject_as_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.subject
+    ADD CONSTRAINT subject_as_id_fkey FOREIGN KEY (as_id) REFERENCES public.academic_session(as_id);
+
+
+--
+-- TOC entry 2767 (class 2606 OID 32864)
+-- Name: subject subject_dept_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.subject
+    ADD CONSTRAINT subject_dept_id_fkey FOREIGN KEY (dept_id) REFERENCES public.department(dept_id);
+
+
+-- Completed on 2021-04-27 13:29:37
+
+--
+-- PostgreSQL database dump complete
+--
+
