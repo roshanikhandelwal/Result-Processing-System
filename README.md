@@ -2,7 +2,7 @@
 This project computes the result(OGPA) of given semester and shows the marks of same.
 
 
-You can run the project by doing this:
+You can run the project by following the steps mentioned below -
 
 
 1. Run com.company folder directly which contains all the files,all the java files are in same package names "com.company".
